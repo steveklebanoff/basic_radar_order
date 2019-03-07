@@ -1,0 +1,18 @@
+{
+  "name": "basic-order",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -b",
+    "dev": "yarn build && node ./lib/src/index.js"
+  },
+  "dependencies": {
+    "0x.js": "^6.0.3",
+    "@0x/connect": "^5.0.2",
+    "@0x/contract-addresses": "^2.2.2",
+    "@0x/subproviders": "^4.0.2",
+    "@0x/web3-wrapper": "^6.0.2",
+    "typescript": "^3.3.3333"
+  }
+}
