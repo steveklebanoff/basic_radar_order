@@ -128,6 +128,7 @@ const go = async () => {
           }
 
           console.log("Cancelling order");
+          // Note that we just need the order here, not the signed order
           const cancelTxn = await contractWrappers.exchange.cancelOrderAsync(
             order
           );
