@@ -13,7 +13,6 @@ import { HttpClient } from "@0x/connect";
 import { createInterface } from "readline";
 
 import { RPCSubprovider, Web3ProviderEngine } from "0x.js";
-import { ExchangeContract } from "@0x/abi-gen-wrappers";
 
 // Vars from env
 const MAKER_ADDRESS = (process.env.MAKER_ADDRESS as string).toLowerCase(); // Address of your wallet
