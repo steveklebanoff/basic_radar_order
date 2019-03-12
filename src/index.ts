@@ -17,7 +17,7 @@ import { RPCSubprovider, Web3ProviderEngine } from "0x.js";
 // Vars from env
 const MAKER_ADDRESS = (process.env.MAKER_ADDRESS as string).toLowerCase(); // Address of your wallet
 const PRIVATE_KEY = process.env.PRIVATE_KEY as string; // Private key
-const ETH_NODE_URL = process.env.ETH_NODE_URL as string; // URL of eth node, i.e. https://mainnet.infura.io/v3/xyz
+const ETH_NODE_URL = process.env.ETH_NODE_URL as string; // URL of eth node, i.e. https://kovan.infura.io/v3/xyz
 
 const SELL_ETH_AMOUNT = new BigNumber(0.002);
 const BUY_ZRX_AMOUNT = new BigNumber(10);
@@ -25,8 +25,8 @@ const BUY_ZRX_AMOUNT = new BigNumber(10);
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 const ZERO = new BigNumber(0);
 const DECIMALS = 18;
-const NETWORK_ID = 1; // Mainnet
-const SRA_URL = "https://api.radarrelay.com/0x/v2";
+const NETWORK_ID = 42; // Kovan
+const SRA_URL = "https://api.kovan.radarrelay.com/0x/v2";
 const FEE_RECIPIENT = "0xa258b39954cef5cb142fd567a46cddb31a670124"; // Radar
 const EXPIRATION_SECONDS = 360;
 
@@ -39,11 +39,12 @@ const go = async () => {
     PRIVATE_KEY as string
   );
   const providerEngine = new Web3ProviderEngine();
+  const rpcProvider = new RPCSubprovider(ETH_NODE_URL);
   providerEngine.addProvider(privateKeyWallet);
-  providerEngine.addProvider(new RPCSubprovider(ETH_NODE_URL));
+  providerEngine.addProvider(rpcProvider);
   providerEngine.start();
 
-  const contractAddresses = getContractAddressesForNetworkOrThrow(1);
+  const contractAddresses = getContractAddressesForNetworkOrThrow(NETWORK_ID);
   const zrxTokenAddress = contractAddresses.zrxToken;
   const etherTokenAddress = contractAddresses.etherToken;
 
@@ -128,6 +129,13 @@ const go = async () => {
           }
 
           console.log("Cancelling order");
+
+          const nonceResult = await rpcProvider.emitPayloadAsync({
+            method: "eth_getTransactionCount",
+            params: [MAKER_ADDRESS, "pending"]
+          });
+          console.log({ nonceResult });
+
           // Note that we just need the order here, not the signed order
           const cancelTxn = await contractWrappers.exchange.cancelOrderAsync(
             order
